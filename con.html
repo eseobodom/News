@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Contact Us</title>
+<link rel="stylesheet" href="con.css">
+</head>
+<body>
+  <nav>
+      <img class="logo" src="logo.jpg" alt="certify">
+      <div class="logo-text" id="title"></div>
+              </nav>
+              <div class="contain">
+  <div class="animate">
+    <div class="container">
+   <form id="regForm" method="POST">
+   <h1 id="head"></h1>
+    
+  <div class="progressbar">
+ <div class="progress" id="progress"></div>
+ <div class="progress-step progress-step-active" data-title="Step 1"></div>
+ <div class="progress-step" data-title="Step 2"></div>
+ <div class="progress-step" data-title="Step 3"></div>
+ <div class="progress-step" data-title="Step 4"></div>
+  </div>
+  <!-- Step 1 -->
+ <div class="form-step form-step-active">
+ <div class="input-group">
+<label for="firstName">First Name</label>
+<input type="text" name="First Name" id="firstName" required>
+  </div>
+ <div class="input-group">
+ <label for="lastName">Last Name</label>
+<input type="text" name="Last Name" id="lastName" required>
+</div>
+<div class="">
+ <a href="#" class="btn btn-next width-50 ml-auto">Next</a>
+  </div>
+</div>
+<!-- Step 2 -->
+<div class="form-step">
+<div class="input-group">
+<label for="email">Email</label>
+<input type="email" name="Email" id="email" required>
+ </div>
+ <div class="input-group">
+<label for="phone">Phone Number</label>
+<input type="tel" name="Phone Number" id="phone" required>
+</div>
+<div class="btns-group">
+<a href="#" class="btn btn-prev">Previous</a>
+<a href="#" class="btn btn-next">Next</a>
+</div>
+ </div>
+            <!-- Step 3 -->
+            <div class="form-step">
+ <div class="input-group">
+<label for="certificate">Message</label>
+<textarea cols="27" rows="5" name="phone" id="image-input" required></textarea>
+</div>
+<div class="btns-group">
+<a href="#" class="btn btn-prev">Previous</a>
+<a href="#" class="btn btn-next">Next</a>
+</div>
+ </div>
+                 <!-- Step 4 -->
+    <div class="form-step">
+       <div class="input-group">
+     <label for="address">How did you hear about us</label>
+    <input type="text" name="How we heard about you" id="address" required><br><br>
+  </div>
+       <div class="btns-group">
+      <a href="#" class="btn btn-prev"> Previous</a>
+    <button type="submit" class="btn"> Submit</button>
+   </div>
+  </div>
+ </form>
+</div>
+  </div>
+  </div>
+<div class="spinner-overlay" id="spinner-overlay">
+    <div class="spinner"></div>
+</div>
+  <footer>
+     © 2024 The Spokesman Newspaper
+   </footer>
+<script src="con.js"></script>
+</body>
+</html>
