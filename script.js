@@ -352,5 +352,20 @@ function writeText(text) {
   let interval = setInterval(writeNextLetter, 100);
 }
 writeText('The spokesman Newspaper');
+document.getElementById('video1').innerHTML = `
+<h2>Featured Video</h2>
+            <video controls muted autoplay>
+              <source src="video1.mp4" type="video/mp4">
+            </video>
+`;
+
+document.getElementById('postedNews').innerHTML = `
+<h2>Ad</h2>
+            <video controls muted autoplay>
+              <source src="video2.mp4" type="video/mp4">
+            </video>
+`;
+
+
 
 
