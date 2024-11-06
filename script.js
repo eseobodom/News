@@ -360,7 +360,7 @@ document.getElementById('video1').innerHTML = `
 `;
 
 document.getElementById('postedNews').innerHTML = `
-<h2>Ad</h2>
+<h2>Stylish wears</h2>
             <video controls muted autoplay>
               <source src="video2.mp4" type="video/mp4">
             </video>
