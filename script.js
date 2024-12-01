@@ -55,7 +55,7 @@ const articles = [
     { title: 'Entertainment: New Movie Release', description: 'A popular movie is being released this week...', image: 'movie.jpg', link: 'enter.html' },
     { title: 'Global Economy: Market Analysis', description: 'An analysis of the current economic state...', image: 'market.jpg', link: 'business.html' },
     
-    {title: 'More News coming in', description: 'Stay tuned for lastest info and posts...', image: 'logo.jpg', link: '#postsCreated'}
+    {title: 'More News coming in', description: 'Stay tuned for lastest info and posts...', image: 'logo.jpg', link: '#titleScroll'}
    
 ];
 
@@ -220,10 +220,10 @@ function loadPosts() {
     .then(response => response.json())
     .then(data => {
         const posts = data.record.posts || [];
-        postsContainer.innerHTML = '<h2>Posts 📌📌</h2>';
+        postsContainer.innerHTML = '<h2>Comments 📌📌</h2>';
 
         if (posts.length === 0) {
-            postsContainer.innerHTML += '<p>No posts yet.</p>';
+            postsContainer.innerHTML += '<p>No comment yet. Be the first to comment.</p>';
         } else {
             posts.forEach((post, index) => {
                 const postElement = document.createElement('div');
@@ -241,7 +241,7 @@ function loadPosts() {
                     buttons.className = 'edit-delete-buttons';
                     buttons.innerHTML = `
                         <button class="edit" onclick="editPost(${index})">Edit</button>
-                        <button class="delete" onclick="deletePost(${index})">Delete</button>
+                        <button class="delete" onclick="deleteComment(${index})">Delete</button>
                     `;
                     postElement.appendChild(buttons);
                 }
@@ -307,7 +307,7 @@ function editPost(index) {
         .catch(error => console.error('Error editing post:', error));
     }
 }
-function deletePost(index) {
+function deleteComment(index) {
     if (confirm("Are you sure you want to delete this post?")) {
         fetch(jsonBinUrl, {
             method: 'GET',
@@ -369,3 +369,243 @@ document.getElementById('postedNews').innerHTML = `
 
 
 
+const form = document.getElementById('newsForm');
+const newsFeed = document.getElementById('newsFeed');
+const uploading = document.getElementById('uploading');
+const pinModal = document.getElementById('pinModal');
+const pinInput = document.getElementById('pin');
+const pinSubmit = document.getElementById('pinSubmit');
+const pinError = document.getElementById('pinError');
+const pin = '1938';
+
+
+const isAdmintrue = localStorage.getItem('isAdmin') === 'true';
+
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    if (!isAdmintrue) {
+        pinModal.classList.remove('hidden');
+        return;
+    }
+
+    await handleSubmit();
+});
+
+pinSubmit.addEventListener('click', async () => {
+    const enteredPin = pinInput.value.trim();
+
+    if (enteredPin === pin) {
+        localStorage.setItem('isAdmin', 'true');
+        pinModal.classList.add('hidden');
+        await handleSubmit();
+    } else {
+        pinError.classList.remove('hidden');
+    }
+});
+
+async function handleSubmit() {
+    const title = document.getElementById('title').value.trim();
+    const content = document.getElementById('content').value.trim();
+    const imageInput = document.getElementById('image');
+    const imageFile = imageInput.files[0];
+
+    if (!title || !content) {
+        alert('Please fill out all fields.');
+        return;
+    }
+
+    let imageUrl = '';
+    uploading.classList.remove('hidden'); 
+
+    if (imageFile) {
+        const formData = new FormData();
+        formData.append('file', imageFile);
+        formData.append('upload_preset', 'ekohnews'); 
+
+        try {
+            const response = await fetch('https://api.cloudinary.com/v1_1/dvv7wqbks/image/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                throw new Error(`Cloudinary upload failed: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            imageUrl = data.secure_url;
+        } catch (error) {
+            console.error('Error uploading image to Cloudinary:', error);
+            uploading.classList.add('hidden'); 
+            return;
+        }
+    }
+
+    const newsItem = {
+        title,
+        content,
+        imageUrl
+    };
+
+    try {
+       
+        const fetchResponse = await fetch('https://api.jsonbin.io/v3/b/66ece8dcacd3cb34a887c5eb', {
+            headers: {
+                'X-Master-Key': '$2a$10$oo/LK9/lQoT1O6vWn.kJjOBkldI40cSgnngqyKEeO.AL7jhjQBKxS'
+            }
+        });
+
+        if (!fetchResponse.ok) {
+            throw new Error(`JSONBin GET failed: ${fetchResponse.statusText}`);
+        }
+
+        const result = await fetchResponse.json();
+        const currentPosts = result.record || [];
+
+        
+        currentPosts.push(newsItem);
+
+      
+        const saveResponse = await fetch('https://api.jsonbin.io/v3/b/66ece8dcacd3cb34a887c5eb', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Master-Key': '$2a$10$oo/LK9/lQoT1O6vWn.kJjOBkldI40cSgnngqyKEeO.AL7jhjQBKxS' 
+            },
+            body: JSON.stringify(currentPosts)
+        });
+
+        if (!saveResponse.ok) {
+            throw new Error(`JSONBin PUT failed: ${saveResponse.statusText}`);
+        }
+
+        console.log('News saved to JSONBin successfully:', await saveResponse.json());
+
+        displayNews(newsItem);
+        form.reset();
+    } catch (error) {
+        console.error('Error saving news to JSONBin:', error);
+    } finally {
+        uploading.classList.add('hidden');
+    }
+}
+
+function displayNews({ title, content, imageUrl }) {
+    const newsDiv = document.createElement('div');
+    newsDiv.classList.add('news-item');
+
+    
+    const newsLink = document.createElement('a');
+    newsLink.href = `post.html?title=${encodeURIComponent(title)}&content=${encodeURIComponent(content)}&imageUrl=${encodeURIComponent(imageUrl)}`;
+
+    if (imageUrl) {
+        const img = document.createElement('img');
+        img.src = imageUrl;
+        newsLink.appendChild(img);
+    }
+
+    const newsTitle = document.createElement('h3');
+    newsTitle.textContent = title;
+    newsLink.appendChild(newsTitle);
+
+    newsDiv.appendChild(newsLink); 
+
+    if (isAdmintrue) {
+        const deleteButton = document.createElement('button');
+        deleteButton.classList.add('delete-btn');
+        deleteButton.textContent = 'Delete';
+        deleteButton.addEventListener('click', () => deletePost(newsDiv)); 
+        newsDiv.appendChild(deleteButton);
+    }
+
+    const shareButton = document.createElement('button');
+    shareButton.classList.add('share-btn');
+    shareButton.textContent = 'Share';
+    shareButton.addEventListener('click', () => sharePost(title, content, imageUrl));
+    newsDiv.appendChild(shareButton);
+
+    newsFeed.prepend(newsDiv);
+}
+
+async function fetchNews() {
+    try {
+        const response = await fetch('https://api.jsonbin.io/v3/b/66ece8dcacd3cb34a887c5eb', {
+            headers: {
+                'X-Master-Key': '$2a$10$oo/LK9/lQoT1O6vWn.kJjOBkldI40cSgnngqyKEeO.AL7jhjQBKxS' 
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`JSONBin GET failed: ${response.statusText}`);
+        }
+
+        const result = await response.json();
+        console.log('Fetched news from JSONBin:', result);
+
+        const posts = result.record || [];
+        posts.forEach(newsItem => {
+            displayNews(newsItem);
+        });
+    } catch (error) {
+        console.error('Error fetching news:', error);
+    }
+}
+
+function deletePost(newsDiv) {
+    if (!confirm("Are you sure you want to delete this post?")) return;
+
+    
+    fetch('https://api.jsonbin.io/v3/b/66ece8dcacd3cb34a887c5eb', {
+        headers: {
+            'X-Master-Key': '$2a$10$oo/LK9/lQoT1O6vWn.kJjOBkldI40cSgnngqyKEeO.AL7jhjQBKxS'
+        }
+    })
+    .then(response => response.json())
+    .then(result => {
+        const updatedPosts = result.record.filter(post => post.title !== newsDiv.querySelector('h3').textContent); 
+
+       
+        fetch('https://api.jsonbin.io/v3/b/66ece8dcacd3cb34a887c5eb', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Master-Key': '$2a$10$oo/LK9/lQoT1O6vWn.kJjOBkldI40cSgnngqyKEeO.AL7jhjQBKxS' 
+            },
+            body: JSON.stringify(updatedPosts)
+        })
+        .then(response => response.json())
+        .then(() => {
+           
+            newsDiv.remove();
+        })
+        .catch(error => console.error('Error deleting post from JSONBin:', error));
+    })
+    .catch(error => console.error('Error fetching posts from JSONBin:', error));
+}
+
+function sharePost(title, content, imageUrl) {
+    if (navigator.share) {
+        navigator.share({
+            title: title,
+            text: content,
+            url: imageUrl ? imageUrl : '' 
+        })
+        .then(() => console.log('Successfully shared!'))
+        .catch((error) => console.error('Error sharing:', error));
+     } else {
+        alert('Sharing is not supported on your device.');
+    }
+}
+
+window.addEventListener('DOMContentLoaded', fetchNews);
+const closeUpload = document.getElementById('closeUpload');
+  const formContainer = document.querySelector('.form-container');
+closeUpload.addEventListener('click', () => {
+  formContainer.style.display = 'none';
+});
+const formcontainShow = document.getElementById('formcontainShow');
+formcontainShow.addEventListener('click', () => {
+  formContainer.style.display = 'block';
+  window.location.href = '#titleScroll';
+});
