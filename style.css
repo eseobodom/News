@@ -585,3 +585,207 @@ h3{
         width: 100%;
         white-space: pre-line;
 }
+
+
+.hidden { 
+          display: none;
+          }
+        .news-item { 
+          border: 1px solid #ccc;
+          padding: 10px;
+          margin-bottom: 10px; 
+          
+        }
+        .delete-btn { 
+          background-color: red; 
+          color: white; 
+          padding: 5px 12px; 
+          border: none; 
+          cursor: pointer;
+          margin-right: 20px;
+          }
+        .share-btn { 
+          background-color: green; 
+          color: white; 
+          padding: 5px 12px;
+          border: none; 
+          cursor: pointer;
+          }
+        
+        .postArticle {
+            font-size: 24px;
+            text-align: center;
+            color: #007BFF;
+            margin-bottom: 20px;
+        }
+
+        .form-container {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 25px;
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .uploading-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .upload-title, .upload-content, .uploading-btn, #pinSubmit {
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: border-color 0.3s ease;
+        }
+
+        .upload-title:focus, .upload-content:focus {
+            border-color: #007BFF;
+            outline: none;
+        }
+
+        .uploading-btn, #pinSubmit {
+            background-color: #f39c12;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        textarea {
+            min-height: 150px;
+            resize: none;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        input[type="file"] {
+            padding: 0;
+            background-color: #f7f7f7;
+            border: 1px solid #ccc;
+        }
+
+        input[type="file"]:hover {
+            background-color: #e9e9e9;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #uploading {
+            text-align: center;
+            font-size: 18px;
+            color: #555;
+            font-weight: bold;
+        }
+
+        .news-item {
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            max-width: 600px;
+            overflow: hidden;
+        }
+
+        .news-item img {
+            width: 100%;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            height: 30vh;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .news-item h3 {
+            color: black;
+            font-size: 22px;
+            margin-bottom: 20px;
+            
+        }
+
+        .news-item p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #444;
+        }
+
+        #newsFeed {
+            margin-top: 40px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .custom-file-input {
+            display: inline-block;
+            padding: 12px 25px;
+            background-color: #007BFF;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            border: none;
+            text-align: center;
+        }
+
+        .custom-file-input:hover {
+            background-color: #0056b3;
+        }
+
+        #newsFeed {
+            white-space: pre-line;
+        }
+        a{
+          text-decoration: none;
+        }
+        #closeUpload{
+          float: right;
+          font-size: 30px;
+          font-weight: bold;
+        }
+        
+.form-container{
+  display: none;
+  margin: 12px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: fixed;
+  z-index: 9999;
+}
+
+
+.post-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        .post-container h1 {
+            text-align: left;
+            color: #007BFF;
+        }
+        .post-container img {
+            max-width: 100%;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .post-container p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #444;
+            white-space: pre-line;
+}
