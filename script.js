@@ -369,6 +369,7 @@ document.getElementById('postedNews').innerHTML = `
 
 
 
+
 const form = document.getElementById('newsForm');
 const newsFeed = document.getElementById('newsFeed');
 const uploading = document.getElementById('uploading');
@@ -377,7 +378,6 @@ const pinInput = document.getElementById('pin');
 const pinSubmit = document.getElementById('pinSubmit');
 const pinError = document.getElementById('pinError');
 const pin = '1938';
-
 
 const isAdmintrue = localStorage.getItem('isAdmin') === 'true';
 
@@ -421,10 +421,10 @@ async function handleSubmit() {
     if (imageFile) {
         const formData = new FormData();
         formData.append('file', imageFile);
-        formData.append('upload_preset', 'ekohnews'); 
+        formData.append('upload_preset', 'mynews'); 
 
         try {
-            const response = await fetch('https://api.cloudinary.com/v1_1/dvv7wqbks/image/upload', {
+            const response = await fetch('https://api.cloudinary.com/v1_1/dkg3jebyh/image/upload', {
                 method: 'POST',
                 body: formData
             });
@@ -449,7 +449,6 @@ async function handleSubmit() {
     };
 
     try {
-       
         const fetchResponse = await fetch('https://api.jsonbin.io/v3/b/66ece8dcacd3cb34a887c5eb', {
             headers: {
                 'X-Master-Key': '$2a$10$oo/LK9/lQoT1O6vWn.kJjOBkldI40cSgnngqyKEeO.AL7jhjQBKxS'
@@ -462,11 +461,8 @@ async function handleSubmit() {
 
         const result = await fetchResponse.json();
         const currentPosts = result.record || [];
-
-        
         currentPosts.push(newsItem);
 
-      
         const saveResponse = await fetch('https://api.jsonbin.io/v3/b/66ece8dcacd3cb34a887c5eb', {
             method: 'PUT',
             headers: {
@@ -479,8 +475,6 @@ async function handleSubmit() {
         if (!saveResponse.ok) {
             throw new Error(`JSONBin PUT failed: ${saveResponse.statusText}`);
         }
-
-        console.log('News saved to JSONBin successfully:', await saveResponse.json());
 
         displayNews(newsItem);
         form.reset();
@@ -495,13 +489,13 @@ function displayNews({ title, content, imageUrl }) {
     const newsDiv = document.createElement('div');
     newsDiv.classList.add('news-item');
 
-    
     const newsLink = document.createElement('a');
     newsLink.href = `post.html?title=${encodeURIComponent(title)}&content=${encodeURIComponent(content)}&imageUrl=${encodeURIComponent(imageUrl)}`;
 
     if (imageUrl) {
         const img = document.createElement('img');
         img.src = imageUrl;
+        img.alt = title;
         newsLink.appendChild(img);
     }
 
@@ -511,13 +505,11 @@ function displayNews({ title, content, imageUrl }) {
 
     newsDiv.appendChild(newsLink); 
 
-    if (isAdmintrue) {
-        const deleteButton = document.createElement('button');
-        deleteButton.classList.add('delete-btn');
-        deleteButton.textContent = 'Delete';
-        deleteButton.addEventListener('click', () => deletePost(newsDiv)); 
-        newsDiv.appendChild(deleteButton);
-    }
+    const deleteButton = document.createElement('button');
+    deleteButton.classList.add('delete-btn');
+    deleteButton.textContent = 'Delete';
+    deleteButton.addEventListener('click', () => deletePost(newsDiv));
+    newsDiv.appendChild(deleteButton);
 
     const shareButton = document.createElement('button');
     shareButton.classList.add('share-btn');
@@ -541,12 +533,8 @@ async function fetchNews() {
         }
 
         const result = await response.json();
-        console.log('Fetched news from JSONBin:', result);
-
         const posts = result.record || [];
-        posts.forEach(newsItem => {
-            displayNews(newsItem);
-        });
+        posts.forEach(displayNews);
     } catch (error) {
         console.error('Error fetching news:', error);
     }
@@ -555,7 +543,6 @@ async function fetchNews() {
 function deletePost(newsDiv) {
     if (!confirm("Are you sure you want to delete this post?")) return;
 
-    
     fetch('https://api.jsonbin.io/v3/b/66ece8dcacd3cb34a887c5eb', {
         headers: {
             'X-Master-Key': '$2a$10$oo/LK9/lQoT1O6vWn.kJjOBkldI40cSgnngqyKEeO.AL7jhjQBKxS'
@@ -563,9 +550,8 @@ function deletePost(newsDiv) {
     })
     .then(response => response.json())
     .then(result => {
-        const updatedPosts = result.record.filter(post => post.title !== newsDiv.querySelector('h3').textContent); 
+        const updatedPosts = result.record.filter(post => post.title !== newsDiv.querySelector('h3').textContent);
 
-       
         fetch('https://api.jsonbin.io/v3/b/66ece8dcacd3cb34a887c5eb', {
             method: 'PUT',
             headers: {
@@ -574,38 +560,31 @@ function deletePost(newsDiv) {
             },
             body: JSON.stringify(updatedPosts)
         })
-        .then(response => response.json())
-        .then(() => {
-           
-            newsDiv.remove();
-        })
-        .catch(error => console.error('Error deleting post from JSONBin:', error));
+        .then(() => newsDiv.remove())
+        .catch(error => console.error('Error deleting post:', error));
     })
-    .catch(error => console.error('Error fetching posts from JSONBin:', error));
+    .catch(error => console.error('Error fetching posts:', error));
 }
 
 function sharePost(title, content, imageUrl) {
     if (navigator.share) {
-        navigator.share({
-            title: title,
-            text: content,
-            url: imageUrl ? imageUrl : '' 
-        })
-        .then(() => console.log('Successfully shared!'))
-        .catch((error) => console.error('Error sharing:', error));
-     } else {
-        alert('Sharing is not supported on your device.');
+        navigator.share({ title, text: content, url: imageUrl || '' })
+        .then(() => console.log('Shared successfully'))
+        .catch(error => console.error('Error sharing:', error));
+    } else {
+        alert('Sharing is not supported on this device.');
     }
 }
 
 window.addEventListener('DOMContentLoaded', fetchNews);
+
 const closeUpload = document.getElementById('closeUpload');
-  const formContainer = document.querySelector('.form-container');
+const formContainer = document.querySelector('.form-container');
 closeUpload.addEventListener('click', () => {
   formContainer.style.display = 'none';
 });
 const formcontainShow = document.getElementById('formcontainShow');
 formcontainShow.addEventListener('click', () => {
-  formContainer.style.display = 'block';
-  window.location.href = '#titleScroll';
-});
+      formContainer.style.display = 'block';
+      window.location.href = '#titleScroll';
+})
