@@ -71,11 +71,7 @@
         <button class="uploading-btn" type="submit">Post</button>
     </form>
     <div id="uploading" class="hidden">Uploading...</div><br><br>
-    <div id="pinModal" class="hidden">
-        <input class="upload-title" type="password" id="pin" placeholder="Enter PIN"><br><br>
-        <button id="pinSubmit">Submit</button>
-        <p id="pinError" class="hidden">Incorrect PIN, try again.</p>
-    </div>
+   
 </div>
 
 
@@ -123,11 +119,11 @@
 <div class="modal" id="postModal">
     <div class="modal-content">
       <div id="closeNews">&times;</div><br>
-        <div class="modal-header" style="color: green;">Post News</div>
+        <div class="modal-header" style="color: green;">Write Comment</div>
         <input type="text" id="adminName" placeholder="Your Name" required>
         <input type="text" id="postTitle" placeholder="Post Title" required>
-        <textarea id="postContent" placeholder="Type your post here..." required></textarea><br>
-        <button id="submitPost">Submit Post</button>
+        <textarea id="postContent" placeholder="Type your comment here..." required></textarea><br>
+        <button id="submitPost">Comment</button>
         <div id="modalMessage" style="color: red; margin-top: 10px;"></div>
         <div id="modalFooter" style="margin-top: 20px;"></div>
     </div>
