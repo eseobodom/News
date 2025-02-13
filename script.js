@@ -21,9 +21,6 @@ document.getElementById('signUp').addEventListener('click', () => {
   }
 });
 
-/*document.getElementById('backToTop').addEventListener('click', () => {
-  window.scrollTo({top: 0, behavior: 'smooth'});
-});*/
 const year = new Date().getFullYear();
 document.getElementById('year').textContent = year;
 
