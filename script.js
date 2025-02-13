@@ -564,15 +564,21 @@ async function deletePost(newsDiv, title, content) {
   }
 }
 
-/*function sharePost(title, content, imageUrl) {
-  const shareText = `${title}\n\n${content}\n\n${imageUrl ? `Image: ${imageUrl}` : ''}`;
+function sharePost(title, content, imageUrl) {
+  const baseUrl = "https://ekohnews.vercel.app/post.html"; 
+  const postUrl = `${baseUrl}?title=${encodeURIComponent(title)}&content=${encodeURIComponent(content)}&image=${encodeURIComponent(imageUrl || '')}`;
+
   if (navigator.share) {
-    navigator.share({ title, text: shareText, url: window.location.href })
-      .catch(error => console.error("Error sharing:", error));
+    navigator.share({
+      title,
+      text: `Check out this post: ${title}`,
+      url: postUrl
+    }).catch(error => console.error("Error sharing:", error));
   } else {
-    alert("Sharing not supported on this browser.");
+    prompt("Sharing not supported. Copy the link manually:", postUrl);
   }
-}*/
+}
+
 
 (async function fetchNews() {
   try {
