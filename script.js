@@ -565,6 +565,7 @@ function sharePost(title, content, imageUrl) {
   const baseUrl = "https://ekohnews.vercel.app/post.html"; 
   const postUrl = `${baseUrl}?title=${encodeURIComponent(title)}&content=${encodeURIComponent(content)}&image=${encodeURIComponent(imageUrl || '')}`;
 
+
   if (navigator.share) {
     navigator.share({
       title,
@@ -572,7 +573,10 @@ function sharePost(title, content, imageUrl) {
       url: postUrl
     }).catch(error => console.error("Error sharing:", error));
   } else {
-    prompt("Sharing not supported. Copy the link manually:", postUrl);
+    navigator.clipboard
+    .writeText(postUrl)
+    .then(() => alert("Link copied, you can share it to any platform"))
+    .catch((err) => console.error("Error copying link: ", err));
   }
 }
 
