@@ -561,22 +561,28 @@ async function deletePost(newsDiv, title, content) {
   }
 }
 
-function sharePost(title, content, imageUrl) {
-  const baseUrl = "https://ekohnews.vercel.app/post.html"; 
+
+async function sharePost(title, content, imageUrl) {
+  const baseUrl = "https://ekohnews.vercel.app/post.html";
   const postUrl = `${baseUrl}?title=${encodeURIComponent(title)}&content=${encodeURIComponent(content)}&image=${encodeURIComponent(imageUrl || '')}`;
-
-
+  
+ 
+  const tinyUrlApi = `https://tinyurl.com/api-create.php?url=${encodeURIComponent(postUrl)}`;
+  const response = await fetch(tinyUrlApi);
+  const shortUrl = await response.text();
+  
+  
   if (navigator.share) {
     navigator.share({
       title,
       text: `Check out this post: ${title}`,
-      url: postUrl
+      url: shortUrl
     }).catch(error => console.error("Error sharing:", error));
   } else {
     navigator.clipboard
-    .writeText(postUrl)
-    .then(() => alert("Link copied, you can share it to any platform"))
-    .catch((err) => console.error("Error copying link: ", err));
+      .writeText(shortUrl)
+      .then(() => alert("Link copied, you can share it to any platform"))
+      .catch((err) => console.error("Error copying link: ", err));
   }
 }
 
