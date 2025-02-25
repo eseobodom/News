@@ -1,26 +1,83 @@
 const loadModal = document.getElementById('loadModal');
+const formSubscription = document.getElementById('subscriptionForm');
+const loadingOverlay = document.getElementById('spinner-overlay');
+const emailInput = document.getElementById('email');
+
+
 window.addEventListener('load', () => {
-  loadModal.style.display = 'block';
-});
-document.getElementById('closeBtn').addEventListener('click', () => {
-  loadModal.style.display = 'none';
-});
-window.addEventListener('click', (e) => {
-  if(!loadModal.contains(e.target)){
-  loadModal.style.display = 'none';
-  }
-});
-document.getElementById('signUp').addEventListener('click', () => {
-  const email = document.getElementById('email').value;
-  if(email.trim() === ''){
-    alert('Please fill out the email field');
-  } else if(!email.includes('@') || !email.includes('.')){
-    alert('Invalid Email');
-  }else {
-  alert(`You will now receive notifications about our news update with ${email}`);
+  if (localStorage.getItem('subscribed') !== 'true') {
+    loadModal.style.display = 'block';
   }
 });
 
+
+document.getElementById('closeBtn').addEventListener('click', () => {
+  loadModal.style.display = 'none';
+});
+
+
+window.addEventListener('click', (e) => {
+  if (!loadModal.contains(e.target)) {
+    loadModal.style.display = 'none';
+  }
+});
+
+
+document.getElementById('signUp').addEventListener('click', () => {
+  const email = emailInput.value;
+  if (email.trim() === '') {
+    alert('Please fill out the email field');
+  } else if (!email.includes('@') || !email.includes('.')) {
+    alert('Invalid Email');
+  } else {
+    alert(`You will now receive notifications about our news update with ${email}`);
+  }
+});
+
+
+document.addEventListener('DOMContentLoaded', function() {
+  if (localStorage.getItem('subscribed') === 'true') {
+    loadModal.style.display = 'none';
+    formSubscription.style.display = 'none';
+  }
+  
+  formSubscription.addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    loadingOverlay.style.display = 'flex';
+    
+    fetch('https://formspree.io/f/xleqkzrr', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: emailInput.value,
+        }),
+      })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Something went wrong with the request.');
+        }
+      })
+      .then(data => {
+        loadingOverlay.style.display = 'none';
+        localStorage.setItem('subscribed', 'true');
+        
+        loadModal.style.display = 'none';
+        formSubscription.style.display = 'none';
+        
+        alert('Thank you for subscribing! You will be updated with the latest news via your email.');
+      })
+      .catch(error => {
+        loadingOverlay.style.display = 'none';
+        console.error('Error:', error)
+        alert('Something went wrong. Please try again.');
+      });
+  });
+});
 const year = new Date().getFullYear();
 document.getElementById('year').textContent = year;
 
